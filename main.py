@@ -11,7 +11,7 @@ class DoorState(enum.Enum):
     open = 1
     close = 0
 
-door_state = DoorState()
+door_state = None
 app = FastAPI()
 camera = cv2.VideoCapture(1, cv2.CAP_DSHOW)
 templates = Jinja2Templates(directory="page")
@@ -49,4 +49,4 @@ def video_feed():
 
 
 if __name__ == '__main__':
-    uvicorn.run(app, host='10.21.0.110', port=8080, debug=True)
+    uvicorn.run(app, host='10.21.0.110', port=8080)
