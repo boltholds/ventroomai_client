@@ -4,11 +4,17 @@ import uvicorn
 from fastapi import FastAPI, Request
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import StreamingResponse
+import RPi.GPIO as GPIO
+import enum
 
+class DoorState(enum.Enum):
+    open = 1
+    close = 0
 
+door_state = DoorState()
 app = FastAPI()
-camera = cv2.VideoCapture(0, cv2.CAP_DSHOW)
-templates = Jinja2Templates(directory="templates")
+camera = cv2.VideoCapture(1, cv2.CAP_DSHOW)
+templates = Jinja2Templates(directory="page")
 
 
 def gen_frames():
@@ -23,6 +29,14 @@ def gen_frames():
                    b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
         time.sleep(0.03)
 
+def door_is_open():
+    door_state = DoorState.open
+
+def door_is_close():
+    door_state = DoorState.close
+
+GPIO.add_event_detect(12, GPIO.FALLING, callback=door_is_open)
+GPIO.add_event_detect(12, GPIO.RISING, callback=door_is_close)
 
 @app.get('/')
 def index(request: Request):
