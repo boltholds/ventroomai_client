@@ -15,10 +15,6 @@ app = FastAPI()
 camera = cv2.VideoCapture(1, cv2.CAP_DSHOW)
 templates = Jinja2Templates(directory="page")
 
-
-
-
-
 def gen_frames():
     while True:
         success, frame = camera.read()
