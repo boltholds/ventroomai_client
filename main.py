@@ -11,6 +11,9 @@ class DoorState(enum.Enum):
     open = 1
     close = 0
 
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(12, GPIO.IN)
+
 door_state = None
 app = FastAPI()
 camera = cv2.VideoCapture(1, cv2.CAP_DSHOW)
