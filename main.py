@@ -4,21 +4,30 @@ import uvicorn
 from fastapi import FastAPI, Request
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import StreamingResponse
-import RPi.GPIO as GPIO
+from gpiozero import Button
 import enum
 
 class DoorState(enum.Enum):
     open = 1
     close = 0
 
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(12, GPIO.IN,pull_up_down=GPIO.PUD_DOWN)
 
+door_sense = Button(27)
 door_state = None
 app = FastAPI()
 camera = cv2.VideoCapture(1, cv2.CAP_DSHOW)
 templates = Jinja2Templates(directory="page")
 
+door_sense.when_pressed = turn_light_off
+door_sense.when_released = turn_light_on
+
+def turn_light_off():
+    door_state_change()
+    pass
+
+def turn_light_on():
+    door_state_change()
+    pass
 
 def gen_frames():
     while True:
@@ -32,12 +41,13 @@ def gen_frames():
                    b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
         time.sleep(0.03)
 
+
+
 def door_state_change():
     if door_state == DoorState.open:
         door_state = DoorState.close
     door_state = DoorState.open
 
-GPIO.add_event_detect(12, GPIO.BOTH, callback=door_state_change,bouncetime = 10)
 
 @app.get('/')
 def index(request: Request):
@@ -57,4 +67,3 @@ if __name__ == '__main__':
     except:
         pass
     finally:
-        GPIO.cleanup()
