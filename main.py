@@ -49,15 +49,16 @@ def video_feed():
 
 
 if __name__ == '__main__':
-    with gpiod.Chip('/dev/gpiochip0') as chip:
-        lines = chip.get_lines(27)
-        lines.request('/dev/gpiochip0', type=gpiod.LINE_REQ_EV_BOTH_EDGES)
+        chippath = r'/dev/gpiochip0'
         while True:
-            ev_lines = lines.event_wait(sec=1)
-            if ev_lines:
-                for line in ev_lines:
-                    event = line.event_read()
-                    door_state_changed_event(event)
+            with gpiod.Chip(path=chippath) as chip:
+                lines = chip.line_offset_from_id(27)
+                lines.request(consumer=chippath, type=gpiod.LINE_REQ_EV_BOTH_EDGES)
+                ev_lines = lines.event_wait(sec=1)
+                if ev_lines:
+                    for line in ev_lines:
+                        event = line.event_read()
+                        door_state_changed_event(event)
 
     try:
         uvicorn.run(app, host='10.21.0.110', port=8080)
