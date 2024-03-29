@@ -32,14 +32,12 @@ def gen_frames():
                    b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
         time.sleep(0.03)
 
-def door_is_open():
+def door_state_change():
+    if door_state == DoorState.open:
+        door_state = DoorState.close
     door_state = DoorState.open
 
-def door_is_close():
-    door_state = DoorState.close
-
-GPIO.add_event_detect(12, GPIO.FALLING, callback=door_is_open,bouncetime = 10)
-GPIO.add_event_detect(12, GPIO.RISING, callback=door_is_close,bouncetime = 10)
+GPIO.add_event_detect(12, GPIO.BOTH, callback=door_state_change,bouncetime = 10)
 
 @app.get('/')
 def index(request: Request):
