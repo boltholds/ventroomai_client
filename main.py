@@ -49,9 +49,9 @@ def video_feed():
 
 
 if __name__ == '__main__':
-    with gpiod.Chip('gpiochip0') as chip:
+    with gpiod.Chip('/dev/gpiochip0') as chip:
         lines = chip.get_lines(27)
-        lines.request('gpiochip0', type=gpiod.LINE_REQ_EV_BOTH_EDGES)
+        lines.request('/dev/gpiochip0', type=gpiod.LINE_REQ_EV_BOTH_EDGES)
         while True:
             ev_lines = lines.event_wait(sec=1)
             if ev_lines:
