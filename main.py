@@ -12,7 +12,7 @@ class DoorState(enum.Enum):
     close = 0
 
 GPIO.setmode(GPIO.BCM)
-GPIO.setup(12, GPIO.IN)
+GPIO.setup(12, GPIO.IN,pull_up_down=GPIO.PUD_DOWN)
 
 door_state = None
 app = FastAPI()
