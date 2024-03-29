@@ -52,4 +52,11 @@ def video_feed():
 
 
 if __name__ == '__main__':
-    uvicorn.run(app, host='10.21.0.110', port=8080)
+    try:
+        uvicorn.run(app, host='10.21.0.110', port=8080)
+    except KeyboardInterrupt:
+        pass
+    except:
+        pass
+    finally:
+        GPIO.cleanup()
