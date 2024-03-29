@@ -38,8 +38,8 @@ def door_is_open():
 def door_is_close():
     door_state = DoorState.close
 
-GPIO.add_event_detect(12, GPIO.FALLING, callback=door_is_open)
-GPIO.add_event_detect(12, GPIO.RISING, callback=door_is_close)
+GPIO.add_event_detect(12, GPIO.FALLING, callback=door_is_open,bouncetime = 10)
+GPIO.add_event_detect(12, GPIO.RISING, callback=door_is_close,bouncetime = 10)
 
 @app.get('/')
 def index(request: Request):
