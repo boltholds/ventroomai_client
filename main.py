@@ -75,7 +75,7 @@ def video_feed():
     return StreamingResponse(gen_frames(), media_type='multipart/x-mixed-replace; boundary=frame')
 
 @app.post('/settings')
-def settings(range_focus: int = Form(...),range_light: int = Form(...)):
+def settings(focus: int = Form(...),light: int = Form(...)):
     print( f'focus {range_focus},{range_light} light')
 
 if __name__ == '__main__':
