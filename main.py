@@ -1,8 +1,8 @@
 import cv2
 import time
 import uvicorn
-from fastapi import FastAPI, Request
-from fastapi.templating import Jinja2Templates
+from fastapi import FastAPI, Request, Form
+from fastapi.templating import Jinja2Templatesas
 from fastapi.responses import StreamingResponse
 import RPi.GPIO as GPIO
 import enum
