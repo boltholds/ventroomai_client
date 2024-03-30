@@ -51,7 +51,7 @@ async def gen_frames():
 
 async def door_state_changed_event(time_update=0.3):
     while True:
-        yield GPIO.input(door_sensor):
+        yield GPIO.input(door_sensor)
         await asyncio.sleep(time_update)
 
 @app.get('/')
