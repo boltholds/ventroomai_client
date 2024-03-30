@@ -25,6 +25,16 @@ app = FastAPI()
 camera = cv2.VideoCapture(0)
 templates = Jinja2Templates(directory="templates")
 
+available_cameras = []
+
+def get_available_cameras():
+    available_cameras = []
+    for i in range(99):
+        cap = cv2.VideoCapture(i)
+        if cap.isOpened():
+            available_cameras.append(i)
+            cap.release()
+    return available_cameras
 
 async def soft_start_led(max_light=100):
     while True:
@@ -66,10 +76,11 @@ def video_feed():
 
 @app.post('/settings')
 def settings(range_focus: int = Form(...),range_light: int = Form(...)):
-    return f'focus {range_focus},{range_light} light'
+    print( f'focus {range_focus},{range_light} light')
 
 if __name__ == '__main__':
     try:
+        available_cameras = get_available_cameras()
         uvicorn.run(app, host='10.21.0.110', port=8080)
     except KeyboardInterrupt:
         pass
