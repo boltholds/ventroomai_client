@@ -4,16 +4,36 @@ import uvicorn
 from fastapi import FastAPI, Request
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import StreamingResponse
-import gpiod
+import RPi.GPIO as GPIO
 import enum
 
 class DoorState(enum.Enum):
     open = 1
     close = 0
 
+door_sensor = 27
+led = 12
+door_state = DoorState.close
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(door_sensor, GPIO.IN)
+GPIO.setup(led, GPIO.OUT)
+pwmOutput_0 = GPIO.PWM(led, 100)
+pwmOutput_0.start(0)
+
 app = FastAPI()
 camera = cv2.VideoCapture(1, cv2.CAP_DSHOW)
 templates = Jinja2Templates(directory="page")
+
+
+async def soft_start_led(max_light=100)
+    while True:
+        for dutyCycle in range(0, max_light+1, 1):
+            pwmOutput_0.ChangeDutyCycle(dutyCycle)
+            await.sleep(0.02)
+
+def stop_led():
+    pwmOutput_0.stop()
+
 
 def gen_frames():
     while True:
@@ -29,37 +49,25 @@ def gen_frames():
 
 
 
-def door_state_changed_event(event):
-    if event.type == gpiod.LineEvent.RISING_EDGE:
-        door_state = DoorState.close
-    elif event.type == gpiod.LineEvent.FALLING_EDGE:
-        door_state = DoorState.open
-        
-    
-
+async def door_state_changed_event(time_update=0.3):
+    while True:
+        yield GPIO.input(door_sensor):
+        await.sleep(time_update)
 
 @app.get('/')
 def index(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+    return templates.TemplateResponse("page.html", {"request": request,"door_state" : door_state_changed_event()})
 
 
 @app.get('/video_feed')
 def video_feed():
     return StreamingResponse(gen_frames(), media_type='multipart/x-mixed-replace; boundary=frame')
 
+@app.post('/settings')
+def settings(range_focus: int = Form(...),range_light: int = Form(...)):
+    return f'focus {range_focus},{range_light} light'
 
 if __name__ == '__main__':
-    chippath = r'/dev/gpiochip0'
-    while True:
-        with gpiod.Chip(path=chippath) as chip:
-            lines = chip.line_offset_from_id(27)
-            lines.request(consumer=chippath, type=gpiod.LINE_REQ_EV_BOTH_EDGES)
-            ev_lines = lines.event_wait(sec=1)
-            if ev_lines:
-                for line in ev_lines:
-                    event = line.event_read()
-                    door_state_changed_event(event)
-
     try:
         uvicorn.run(app, host='10.21.0.110', port=8080)
     except KeyboardInterrupt:
@@ -67,4 +75,4 @@ if __name__ == '__main__':
     except:
         pass
     finally:
-        pass
+        GPIO.cleanup()
