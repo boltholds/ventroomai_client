@@ -29,13 +29,13 @@ async def soft_start_led(max_light=100):
     while True:
         for dutyCycle in range(0, max_light+1, 1):
             pwmOutput_0.ChangeDutyCycle(dutyCycle)
-            await.sleep(0.02)
+            await asyncio.sleep.sleep(0.02)
 
 def stop_led():
     pwmOutput_0.stop()
 
 
-def gen_frames():
+async def gen_frames():
     while True:
         success, frame = camera.read()
         if not success:
@@ -45,14 +45,14 @@ def gen_frames():
             frame = buffer.tobytes()
             yield (b'--frame\r\n'
                    b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
-        time.sleep(0.03)
+        await asyncio.sleep(0.03)
 
 
 
 async def door_state_changed_event(time_update=0.3):
     while True:
         yield GPIO.input(door_sensor):
-        await.sleep(time_update)
+        await asyncio.sleep(time_update)
 
 @app.get('/')
 def index(request: Request):
