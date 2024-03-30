@@ -21,8 +21,8 @@ pwmOutput_0 = GPIO.PWM(led, 100)
 pwmOutput_0.start(0)
 
 app = FastAPI()
-camera = cv2.VideoCapture(1, cv2.CAP_DSHOW)
-templates = Jinja2Templates(directory="page")
+camera = cv2.VideoCapture(0)
+templates = Jinja2Templates(directory="templates")
 
 
 async def soft_start_led(max_light=100):
