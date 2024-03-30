@@ -6,6 +6,7 @@ from fastapi.templating import Jinja2Templates
 from fastapi.responses import StreamingResponse
 import RPi.GPIO as GPIO
 import enum
+import asyncio
 
 class DoorState(enum.Enum):
     open = 1
