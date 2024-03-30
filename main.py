@@ -25,7 +25,7 @@ camera = cv2.VideoCapture(1, cv2.CAP_DSHOW)
 templates = Jinja2Templates(directory="page")
 
 
-async def soft_start_led(max_light=100)
+async def soft_start_led(max_light=100):
     while True:
         for dutyCycle in range(0, max_light+1, 1):
             pwmOutput_0.ChangeDutyCycle(dutyCycle)
